@@ -193,26 +193,40 @@ class Quotient_Rule_Scene(Scene):
         self.zoom_on_quotient()
 
     def Laws_of_exponents(self):
-        title_text = Text("Laws of exponents")
-        title_text.move_to(UP*3)
-        self.laws_group = VGroup()
+        self.title_text = Text("Laws of exponents")
+        self.title_text.move_to(UP*3)
+        self.laws_group = VGroup().set_color_by_gradient(darker_blues)
         for law, text in exponent_laws.items():
             self.laws_group.add(text)
         self.laws_group.arrange(DOWN)
-        self.laws_group.next_to(title_text, DOWN, buff=0.5)
-        self.play(Write(title_text))
+        self.laws_group.next_to(self.title_text, DOWN, buff=0.5)
+        self.play(Write(self.title_text))
         self.play(Write(self.laws_group))
     
     def zoom_on_quotient(self):
         box = SurroundingRectangle(self.laws_group[1], buff=0.2).set_color(darker_blues, 20)
+        # boxed = 
         quotient_rule_text = (
             Text("Quotient Rule", font="Cormorant")
             .next_to(self.laws_group[0], UP)
             .set_color(darker_blues)
         )
-        self.play(Create(box))
-        self.play(Write(quotient_rule_text))
+        box.add_updater(
+                lambda b: b.become(
+                    SurroundingRectangle(self.laws_group[1], buff=0.2)
+                    .set_color(darker_blues, 50)
+                    .set_stroke(width=1)
+                )
+            )
 
+        self.play(Create(box))
+        self.play(FadeOut(self.title_text), FadeOut(self.laws_group[0],self.laws_group[2], self.laws_group[3]))
+        self.play(Write(quotient_rule_text))
+        self.play(self.laws_group[1].animate.center())
+        box.clear_updaters()
+        self.play(FadeOut(box))
+        
+        
 
 
 

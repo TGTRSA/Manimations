@@ -191,13 +191,14 @@ class Quotient_Rule_Scene(Scene):
     def construct(self):
         self.Laws_of_exponents()
         self.zoom_on_quotient()
+        self.practical_quotient_expansion()
 
     def Laws_of_exponents(self):
         self.title_text = Text("Laws of exponents")
         self.title_text.move_to(UP*3)
-        self.laws_group = VGroup().set_color_by_gradient(darker_blues)
+        self.laws_group = VGroup()
         for law, text in exponent_laws.items():
-            self.laws_group.add(text)
+            self.laws_group.add(text.set_color_by_gradient(darker_blues))
         self.laws_group.arrange(DOWN)
         self.laws_group.next_to(self.title_text, DOWN, buff=0.5)
         self.play(Write(self.title_text))
@@ -215,7 +216,7 @@ class Quotient_Rule_Scene(Scene):
                 lambda b: b.become(
                     SurroundingRectangle(self.laws_group[1], buff=0.2)
                     .set_color(darker_blues, 50)
-                    .set_stroke(width=1)
+                    .set_stroke(width=0.5)
                 )
             )
 
@@ -225,6 +226,11 @@ class Quotient_Rule_Scene(Scene):
         self.play(self.laws_group[1].animate.center())
         box.clear_updaters()
         self.play(FadeOut(box))
+    
+    def practical_quotient_expansion():
+        example = MathTex("\frac{2^m}{2^n}=\\upperbrace{2\cdot2\cdots}^m")
+        example.next_to(self.laws_group[1], RIGHT)
+        self.play(Write(example))
         
         
 

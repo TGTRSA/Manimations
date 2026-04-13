@@ -227,9 +227,11 @@ class Quotient_Rule_Scene(Scene):
         box.clear_updaters()
         self.play(FadeOut(box))
     
-    def practical_quotient_expansion():
-        example = MathTex("\frac{2^m}{2^n}=\\upperbrace{2\cdot2\cdots}^m")
+    def practical_quotient_expansion(self):
+        example = MathTex(r"=\frac{2^m}{2^n}=\frac{\overbrace{2\cdot 2 \cdots}^m}{\underbrace{2\cdot 2 \cdots}_n}").set_color_by_gradient(green_gradient)
         example.next_to(self.laws_group[1], RIGHT)
+        self.play(self.laws_group[1].animate.to_edge(LEFT))
+        self.wait(1)
         self.play(Write(example))
         
         

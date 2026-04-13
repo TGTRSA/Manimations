@@ -1,0 +1,5 @@
+# .gitignore
+# cache files and media
+**/__pycache__/
+**/media/
+

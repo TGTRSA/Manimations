@@ -219,21 +219,36 @@ class Quotient_Rule_Scene(Scene):
                     .set_stroke(width=0.5)
                 )
             )
-
+        # surrounding the equation with a box to emphasise
         self.play(Create(box))
+        # removing the other rules and title
         self.play(FadeOut(self.title_text), FadeOut(self.laws_group[0],self.laws_group[2], self.laws_group[3]))
+        # obv
         self.play(Write(quotient_rule_text))
+        # moving the quotient rule to the center
         self.play(self.laws_group[1].animate.center())
+        # removing updaters for box position 
+        # \\*** 
+        # *?Is it necessary*\\ 
         box.clear_updaters()
         self.play(FadeOut(box))
+
+    def set_blue(self, thing:Mobject):
+        thing.set_color_by_gradient(darker_blues)
     
     def practical_quotient_expansion(self):
-        example = MathTex(r"=\frac{2^m}{2^n}=\frac{\overbrace{2\cdot 2 \cdots}^m}{\underbrace{2\cdot 2 \cdots}_n}").set_color_by_gradient(green_gradient)
-        example.next_to(self.laws_group[1], RIGHT)
-        self.play(self.laws_group[1].animate.to_edge(LEFT))
-        self.wait(1)
-        self.play(Write(example))
+        elaborating = MathTex(r"\frac{x^m}{x^n}=\frac{\overbrace{x\cdot x \cdots}^m}{\underbrace{x\cdot x \cdots}_n}").set_color_by_gradient(darker_blues)
+        practical_example = MathTex(r"\frac{x^4}{x^2}=\frac{x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}").set_color_by_gradient(darker_blues)
+        # this a version of practical example
+        bracket_version = MathTex(r"\frac{2^4}{2^2}=\frac{2" r"\cdot 2" r"\cdot 2 " r"\cdot 2" r"}" r"{2 \cdot 2}")
+        self.set_blue(bracket_version)
+        self.play(self.laws_group[1].animate.center())
+        #removing the quotient rule in favour of some practical example
+        self.play(ReplacementTransform(self.laws_group[1],elaborating))
+        self.wait(0.5)
+        self.play(FadeOut(elaborating), Write(practical_example))
         
+
         
 
 

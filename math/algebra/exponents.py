@@ -240,29 +240,44 @@ class Quotient_Rule_Scene(Scene):
         thing.set_color_by_gradient(green_gradient)
     
     def practical_quotient_expansion(self):
-        practical_example = MathTex(r"\frac" r"{x^4}" r"{x^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}").set_color_by_gradient(darker_blues)
+        practical_example = MathTex(r"\frac" r"{" r"x" r"^4}" r"{" r"x" r"^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}").set_color_by_gradient(darker_blues)
         expansion = (
             MathTex(r"=\frac{\overbrace{a\cdot a \cdots}^m}{\underbrace{a\cdot a \cdots}_n}")
             .next_to(self.laws_group[1][0], RIGHT)    
         )
         self.set_green(expansion)
         # this a version of practical example
-        bracket_version = MathTex(r"\frac{2^4}{2^2}=\frac{2" r"\cdot 2" r"\cdot 2 " r"\cdot 2" r"}" r"{2 \cdot 2}")
+        temp = TexTemplate()
+        temp.add_to_preamble(r"\usepackage{cancel}")
+        const_ver = MathTex(r"\frac" r"{2^4}" r"{2^2}" r"=\frac{2\cdot 2\cdot 2\cdot 2 }{2 \cdot 2}").set_color_by_gradient(darker_blues)
+        canceling = (
+            MathTex(r"\frac" r"{2^4}" r"{2^2}" r"=\frac{\cancel{2}\cdot \cancel{2}\cdot 2\cdot 2 }{\cancel{2} \cdot \cancel{2} }", tex_template=temp)
+            .set_color_by_gradient(darker_blues)
+            
+        ) 
+        # ? maybe we should explain division
         
+        result = (
+            MathTex(r"\frac{2\cdot2}{1\cdot1} = \frac21")
+        )
+
+        # nth_var = MathTex(r"2")
         self.play(self.laws_group[1].animate.center())
         # coloring the definition prt of the equaiton to emphasise it
         self.play(self.laws_group[1][0].animate.set_color(green_gradient))
         # fading out the rest of the equaiton to make room for its expansion
         self.play(FadeOut(self.laws_group[1][1], self.laws_group[1][2]))
         self.play(Write(expansion))
-        # self.play(ReplacementTransform(self.laws_group[1],elaborating))
-        # self.wait(0.5)
-
-        # self.play(FadeOut(elaborating))
-        # self.wait(0.5) 
-        # self.play(Write(practical_example))
-        
-
+        self.wait(0.5)
+        # writing the practical example now
+        self.play(ReplacementTransform(expansion,practical_example), FadeOut(self.laws_group[1][0]))
+        self.wait(1)
+        # replacing the xs with 2
+        self.play(Transform(practical_example, const_ver))
+        self.wait(1)
+        self.play(TransformMatchingShapes(const_ver, canceling), FadeOut(const_ver))        
+        self.wait(0.5)
+        self.play()
         
 
 

@@ -256,10 +256,12 @@ class Quotient_Rule_Scene(Scene):
             
         ) 
         # ? maybe we should explain division
-        
+
         result = (
-            MathTex(r"\frac{2\cdot2}{1\cdot1} = \frac21")
+            MathTex(r"=", r"\frac{2\cdot2}{1\cdot1}=", r"\frac{2^2}{1}=" r"2^2")
+            .next_to(canceling, RIGHT)
         )
+        self.set_blue(result)
 
         # nth_var = MathTex(r"2")
         self.play(self.laws_group[1].animate.center())
@@ -275,9 +277,14 @@ class Quotient_Rule_Scene(Scene):
         # replacing the xs with 2
         self.play(Transform(practical_example, const_ver))
         self.wait(1)
-        self.play(TransformMatchingShapes(const_ver, canceling), FadeOut(const_ver))        
+        self.play(FadeOut(const_ver), FadeTransform(const_ver, canceling))        
         self.wait(0.5)
-        self.play()
+        self.play(FadeOut(canceling, result[0]), result.animate.center())
+        self.wait(0.5)
+        self.play(Write(result))
+
+    def variable_example(self):
+        pass
         
 
 

@@ -192,6 +192,7 @@ class Quotient_Rule_Scene(Scene):
         self.Laws_of_exponents()
         self.zoom_on_quotient()
         self.practical_quotient_expansion()
+        self.variable_example()
 
     def Laws_of_exponents(self):
         self.title_text = Text("Laws of exponents")
@@ -238,7 +239,7 @@ class Quotient_Rule_Scene(Scene):
 
     def set_green(self, thing:Mobject):
         thing.set_color_by_gradient(green_gradient)
-    
+
     def practical_quotient_expansion(self):
         practical_example = MathTex(r"\frac" r"{" r"x" r"^4}" r"{" r"x" r"^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}").set_color_by_gradient(darker_blues)
         expansion = (
@@ -267,27 +268,59 @@ class Quotient_Rule_Scene(Scene):
         self.play(self.laws_group[1].animate.center())
         # coloring the definition prt of the equaiton to emphasise it
         self.play(self.laws_group[1][0].animate.set_color(green_gradient))
+
+        # Fade out the non-essential parts of the law definition to focus on the base/ exponent relationship
         # fading out the rest of the equaiton to make room for its expansion
         self.play(FadeOut(self.laws_group[1][1], self.laws_group[1][2]))
+
+        # Display the generic exponential law expansion (a^m / a^n = a^(m-n))
         self.play(Write(expansion))
         self.wait(0.5)
+
+        # Transform the generic expansion into a concrete example with x variables
         # writing the practical example now
         self.play(ReplacementTransform(expansion,practical_example), FadeOut(self.laws_group[1][0]))
         self.wait(1)
+
+        # Substitute x=2 to make it a numerical example instead of algebraic
         # replacing the xs with 2
         self.play(ReplacementTransform(practical_example, const_ver), FadeOut(practical_example))
         self.wait(1)
+
+        # Cancel matching factors in numerator and denominator to simplify
         self.play(ReplacementTransform(const_ver, canceling))        
         self.wait(0.5)
+
+        # Reveal the final simplified result of 2^2 = 4
         self.play(Write(result))
         self.wait(0.5)
+
+        # Remove the cancellation marks and center the result for emphasis
         self.play(FadeOut(canceling), result.animate.center())
-        self.play(FadeOut(result[0]))
+
+        # Remove the first part of the result (the "=" sign and intermediate steps)
+        self.play(FadeOut(result[0]), result[0].animate.set_color(BLACK))
+
+        # Finally remove the remaining result (final answer 2^2)
         self.play(FadeOut(result))
 
     def variable_example(self):
-        pass
+        # preambles
+        temp = TexTemplate()
+        temp.add_to_preamble(r"\usepackage{cancel}")
+        temp.add_to_preamble(r"\usepackage{chemfig}")
+        temp.add_to_preamble(r"\usepackage{tikz}")
         
-
+        # variables
+        variable_example = MathTex(r"\frac" r"{" r"x" r"^4}" r"{" r"x" r"^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}")
+        canceled_out =  MathTex(r"\frac{x^4}{x^2}=\frac{\cancel{x}\cdot \candel{x} \cdot x\cdot x}{\cancel{x} \cdot \cancel{x}}", tex_template=temp)
+        add_brace   = MatchTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\cancel{x}\cdot \candel{x} \cdot x\cdot x}}^-2{\underbace{\cancel{x} \cdot \cancel{x}}}_-2", tex_template=temp)
+        molecule = Tex(r"\chemfig{H-A} \quad \chemfig{B}", tex_template=temp)
+        
+        # animations
+        self.set_blue(variable_example)
+        self.play(Write(variable_example))
+        self.play(Transform(variable_example, canceled_out))
+        self.play(ReplacementTransform(canceled_out, add_brace))
 
 

@@ -313,14 +313,18 @@ class Quotient_Rule_Scene(Scene):
         
         # variables
         variable_example = MathTex(r"\frac" r"{" r"x" r"^4}" r"{" r"x" r"^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}")
-        canceled_out =  MathTex(r"\frac{x^4}{x^2}=\frac{\cancel{x}\cdot \candel{x} \cdot x\cdot x}{\cancel{x} \cdot \cancel{x}}", tex_template=temp)
-        add_brace   = MatchTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\cancel{x}\cdot \candel{x} \cdot x\cdot x}}^-2{\underbace{\cancel{x} \cdot \cancel{x}}}_-2", tex_template=temp)
+        canceled_out     = MathTex(r"\frac{x^4}{x^2}=\frac{\cancel{x}\cdot \cancel{x} \cdot x\cdot x}{\cancel{x} \cdot \cancel{x} }", tex_template=temp)
+        add_brace        = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\cancel{x}\cdot \cancel{x}}^{-2} \cdot x\cdot x}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
+        double_brace     = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\overbrace{\cancel{x}\cdot \cancel{x}}^{2} \cdot x\cdot x}^{4}}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
+        
         molecule = Tex(r"\chemfig{H-A} \quad \chemfig{B}", tex_template=temp)
         
         # animations
         self.set_blue(variable_example)
         self.play(Write(variable_example))
-        self.play(Transform(variable_example, canceled_out))
-        self.play(ReplacementTransform(canceled_out, add_brace))
-
+        self.play(TransformMatchingShapes(variable_example, canceled_out))
+        self.wait(1)
+        self.play(TransformMatchingShapes(canceled_out, add_brace))
+        self.wait(0.5)
+        self.play(TransformMatchingShapes(add_brace, double_brace))
 

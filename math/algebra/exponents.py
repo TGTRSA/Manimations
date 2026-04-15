@@ -275,13 +275,17 @@ class Quotient_Rule_Scene(Scene):
         self.play(ReplacementTransform(expansion,practical_example), FadeOut(self.laws_group[1][0]))
         self.wait(1)
         # replacing the xs with 2
-        self.play(Transform(practical_example, const_ver))
+        self.play(ReplacementTransform(practical_example, const_ver), FadeOut(practical_example))
         self.wait(1)
-        self.play(FadeOut(const_ver), FadeTransform(const_ver, canceling))        
-        self.wait(0.5)
-        self.play(FadeOut(canceling, result[0]), result.animate.center())
+        self.play(ReplacementTransform(const_ver, canceling))        
         self.wait(0.5)
         self.play(Write(result))
+        self.wait(0.5)
+        self.play(FadeOut(canceling), FadeOut(result[0]))
+        self.play(result.animate.center())
+        
+        
+
 
     def variable_example(self):
         pass

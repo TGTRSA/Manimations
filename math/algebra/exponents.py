@@ -281,11 +281,9 @@ class Quotient_Rule_Scene(Scene):
         self.wait(0.5)
         self.play(Write(result))
         self.wait(0.5)
-        self.play(FadeOut(canceling), FadeOut(result[0]))
-        self.play(result.animate.center())
-        
-        
-
+        self.play(FadeOut(canceling), result.animate.center())
+        self.play(FadeOut(result[0]))
+        self.play(FadeOut(result))
 
     def variable_example(self):
         pass

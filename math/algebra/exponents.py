@@ -193,6 +193,7 @@ class Quotient_Rule_Scene(Scene):
         self.zoom_on_quotient()
         self.practical_quotient_expansion()
         self.variable_example()
+        self.final_()
 
     def Laws_of_exponents(self):
         self.title_text = Text("Laws of exponents")
@@ -315,8 +316,8 @@ class Quotient_Rule_Scene(Scene):
         variable_example = MathTex(r"\frac" r"{" r"x" r"^4}" r"{" r"x" r"^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}")
         canceled_out     = MathTex(r"\frac{x^4}{x^2}=\frac{\cancel{x}\cdot \cancel{x} \cdot x\cdot x}{\cancel{x} \cdot \cancel{x} }", tex_template=temp)
         add_brace        = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\cancel{x}\cdot \cancel{x}}^{-2} \cdot x\cdot x}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
-        double_brace     = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\overbrace{\cancel{x}\cdot \cancel{x}}^{2} \cdot x\cdot x}^{4}}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
-        
+        double_brace     = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\overbrace{\cancel{x}\cdot \cancel{x}}^{-2} \cdot x\cdot x}^{4}}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
+        resulting_expression = MathTex(r"=",r"x^{4-2} ").next_to(double_brace)
         molecule = Tex(r"\chemfig{H-A} \quad \chemfig{B}", tex_template=temp)
         
         # animations
@@ -327,4 +328,11 @@ class Quotient_Rule_Scene(Scene):
         self.play(TransformMatchingShapes(canceled_out, add_brace))
         self.wait(0.5)
         self.play(TransformMatchingShapes(add_brace, double_brace))
+        self.play(Write(resulting_expression))
+        self.wait(2)
+        self.play(FadeOut(resulting_expression, double_brace))
 
+    def final_(self):
+        law_ = MathTex(r"\frac{x^m}{x^n}=x^{m-n}")
+
+        self.play(Write(law_))

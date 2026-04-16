@@ -21,7 +21,7 @@ green_gradient = [
 exponent_laws = {
     "product_rule": MathTex(r"a^m", r"\cdot", r"a^n", "=", r"a^{m+n}"),
     "quotient_rule": MathTex(r"\frac" r"{a^m}{a^n}", "=", r"a^{m-n}"),
-    "power_rule" :MathTex(r"(a", r"^m)", "=", r"a^{m+n}"),
+    "power_rule" :MathTex(r"(a", r"^m)^n", "=", r"a^{m\cdot n}"),
     "power_of_quotient_rule" : MathTex(
             r"\left(",
             r"\frac{a}{b}",
@@ -308,9 +308,17 @@ class Quotient_Rule_Scene(Scene):
     def variable_example(self):
         # preambles
         temp = TexTemplate()
+        # temp.tex_compiler="xelatex"
+        # temp.output_format = ".xdv"
         temp.add_to_preamble(r"\usepackage{cancel}")
-        temp.add_to_preamble(r"\usepackage{chemfig}")
-        temp.add_to_preamble(r"\usepackage{tikz}")
+        # temp.add_to_preamble(r"\usepackage[garamond]{mathdesign}")
+        # temp.add_to_preamble(r"\usepackage{fontspec}")
+        # temp.add_to_preamble(r"\usepackage{unicode-math}")
+        # temp.add_to_preamble(r"\usepackage{lmodern}")
+        # temp.add_to_preamble(r"\setmainfont[Ligatures=TeX]{Lato Thin}")
+        # temp.add_to_preamble(r"\setmathfont{Latin Modern Math}")
+        # temp.add_to_preamble(r"\usepackage{chemfig}")
+        # temp.add_to_preamble(r"\usepackage{tikz}")
         
         # variables
         variable_example = MathTex(r"\frac" r"{" r"x" r"^4}" r"{" r"x" r"^2}" r"=\frac{" r"x" r"\cdot x" r"\cdot x " r"\cdot x" r"}" r"{x \cdot x}")
@@ -318,7 +326,7 @@ class Quotient_Rule_Scene(Scene):
         add_brace        = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\cancel{x}\cdot \cancel{x}}^{-2} \cdot x\cdot x}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
         double_brace     = MathTex(r"\frac{x^4}{x^2}=\frac{\overbrace{\overbrace{\cancel{x}\cdot \cancel{x}}^{-2} \cdot x\cdot x}^{4}}{\underbrace{\cancel{x} \cdot \cancel{x}}_{-2}}", tex_template=temp)
         resulting_expression = MathTex(r"=",r"x^{4-2} ").next_to(double_brace)
-        molecule = Tex(r"\chemfig{H-A} \quad \chemfig{B}", tex_template=temp)
+        # molecule = Tex(r"\chemfig{H-A} \quad \chemfig{B}", tex_template=temp)
         
         # animations
         self.set_blue(variable_example)
@@ -336,3 +344,54 @@ class Quotient_Rule_Scene(Scene):
         law_ = MathTex(r"\frac{x^m}{x^n}=x^{m-n}")
 
         self.play(Write(law_))
+
+class Power_Rule_Scene(Scene):
+    def construct(self):
+        self.camera.background_color = BG
+        self.opening_scene()
+        self.zoom_on_law()
+
+    def opening_scene(self):
+        
+        self.title_text = Text("Laws of exponents")
+        self.set_blue(self.title_text)
+        self.title_text.move_to(UP*3)
+        self.laws_group = VGroup()
+        for law, text in exponent_laws.items():
+            self.laws_group.add(text.set_color_by_gradient(darker_blues))
+        self.laws_group.arrange(DOWN)
+        self.laws_group.next_to(self.title_text, DOWN, buff=0.5)
+        self.play(Write(self.title_text))
+        self.play(Write(self.laws_group))
+    
+    def zoom_on_law(self):
+        box = SurroundingRectangle(self.laws_group[2], buff=0.2).set_color(darker_blues, 20)
+        # boxed = 
+        power_rule = (
+            Text("Power Rule", font="Cormorant")
+            .to_edge(UP)
+            .set_color(darker_blues)
+        )
+        box.add_updater(
+                lambda b: b.become(
+                    SurroundingRectangle(self.laws_group[2], buff=0.2)
+                    .set_color(darker_blues, 50)
+                    .set_stroke(width=0.5)
+                )
+            )
+        # surrounding the equation with a box to emphasise
+        self.play(Create(box))
+        # removing the other rules and title
+        self.play(FadeOut(self.title_text), FadeOut(self.laws_group[0],self.laws_group[1], self.laws_group[3]))
+        # obv
+        self.play(Write(power_rule))
+        # moving the quotient rule to the center
+        self.play(self.laws_group[2].animate.center())
+        # removing updaters for box position 
+        # \\*** 
+        # *?Is it necessary*\\ 
+        box.clear_updaters()
+        self.play(FadeOut(box))
+
+    def set_blue(self, thing:Mobject):
+        thing.set_color_by_gradient(darker_blues)

@@ -347,9 +347,10 @@ class Quotient_Rule_Scene(Scene):
 
 class Power_Rule_Scene(Scene):
     def construct(self):
-        self.camera.background_color = BG
+        # self.camera.background_color = BG
         self.opening_scene()
         self.zoom_on_law()
+        self.elaborate()
 
     def opening_scene(self):
         
@@ -392,6 +393,44 @@ class Power_Rule_Scene(Scene):
         # *?Is it necessary*\\ 
         box.clear_updaters()
         self.play(FadeOut(box))
+
+    def elaborate(self):
+        var_e_x     = MathTex(r"(a^m)=x")
+        therefore   = MathTex(r"(a^m)^{n}=x^{n}=\underbrace{x\cdot x \cdots x}_{n}")
+        expansion   = MathTex(r"(a^m)^n = \underbrace{(a^m)\cdot (a^m)\cdots (a^m) }_{n} ")
+        explanation_group = VGroup(var_e_x, therefore, expansion)
+        expansion_overbrace   = MathTex(r"(a^m)^n = \overbrace{\underbrace{(a^m)\cdot (a^m)}^{x^{n}\cdot x^{n}}\cdots (a^m) }_{n} ")
+        addition_exponents    =  MathTex(r"(a^m)^n=", r" (a^m) \codt (a^m) \cdots (a^m) =", r" a^{\overbrace{m+m+m}}^{n: m\cdot n (m\times n)}")
+        fin = MathTex(r"(a^m)^{n} = a^{\overbrace{m+m\cdots+m}^{n}} = a^{m\cdot n}")
+
+        box = SurroundingRectangle(addition_exponents[2], buff=0.2).set_color(green_gradient, 20)
+        box.add_updater(
+                lambda b: b.become(
+                    SurroundingRectangle(self.laws_group[2], buff=0.2)
+                    .set_color(green_gradient, 50)
+                    .set_stroke(width=0.5)
+                )
+            )
+
+        # animation sequence using for loop
+        for indx in range(len(explanation_group)):
+            self.set_blue(explanation_group[indx])
+            if indx>0:
+                self.wait(1)
+                self.play(ReplacementTransform(current_eq, explanation_group[indx]))
+                current_eq = explanation_group[indx]
+            else:
+                self.play(ReplacementTransform(self.laws_group[2], explanation_group[indx]))
+                current_eq = explanation_group[indx]
+
+        self.wait(1)
+        self.play(ReplacementTransform(current_eq, expansion_overbrace))
+        self.wait(0.5)
+        self.play(ReplacementTransform(expansion_overbrace, addition_exponents))
+        self.Create
+        self.wait(1)
+        self.play(ReplacementTransform(addition_exponents, fin))
+
 
     def set_blue(self, thing:Mobject):
         thing.set_color_by_gradient(darker_blues)
